@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nansocht OS 18</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .window {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 300px;
+            height: 200px;
+            top: 100px;
+            left: 100px;
+            overflow: hidden;
+            cursor: move;
+        }
+        .window .title-bar {
+            background: #0078d4;
+            color: white;
+            padding: 5px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .window .title-bar .btns {
+            display: flex;
+        }
+        .window .title-bar .btns button {
+            background: #0078d4;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            margin-left: 2px;
+            cursor: pointer;
+        }
+        .window .title-bar .btns button:hover {
+            background: #005a9e;
+        }
+        .window .content {
+            padding: 10px;
+            height: calc(100% - 30px);
+            overflow-y: auto;
+        }
+        .clock {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: #0078d4;
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+        }
+        .start-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background: #0078d4;
+            color: white;
+            width: 200px;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+        }
+        .start-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .start-menu ul li {
+            margin: 5px 0;
+        }
+        .start-menu ul li button {
+            background: #0078d4;
+            border: none;
+            color: white;
+            padding: 5px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+        .start-menu ul li button:hover {
+            background: #005a9e;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        .task-item button {
+            background: #e63946;
+            border: none;
+            color: white;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+        .task-item button:hover {
+            background: #d62839;
+        }
+        .task-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .graph {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock" class="clock"></div>
+    <div id="startMenu" class="start-menu">
+        <ul>
+            <li><button onclick="openWindow('window1')">時計</button></li>
+            <li><button onclick="openWindow('window2')">カメラ</button></li>
+            <li><button onclick="openWindow('window3')">辞書</button></li>
+            <li><button onclick="openWindow('window4')">経済</button></li>
+            <li><button onclick="openWindow('window5')">メール</button></li>
+            <li><button onclick="openWindow('window6')">天気予報</button></li>
+            <li><button onclick="openWindow('window7')">タスク管理</button></li>
+            <li><button onclick="openWindow('window8')">メモ帳</button></li>
+            <li><button onclick="openWindow('window9')">カレンダー</button></li>
+            <li><button onclick="openWindow('window10')">計算機</button></li>
+        </ul>
+    </div>
+
+    <div id="window1" class="window">
+        <div class="title-bar">
+            時計
+            <div class="btns">
+                <button onclick="minimize('window1')">_</button>
+                <button onclick="maximize('window1')">[]</button>
+                <button onclick="closeWindow('window1')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <div id="clockContent"></div>
+          　<iframe src="https://sakalt.github.io/temperature/tokei.html" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
+    <div id="window2" class="window">
+        <div class="title-bar">
+            カメラ
+            <div class="btns">
+                <button onclick="minimize('window2')">_</button>
+                <button onclick="maximize('window2')">[]</button>
+                <button onclick="closeWindow('window2')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>カメラアプリの内容。</p>
+        </div>
+    </div>
+
+    <div id="window3" class="window">
+        <div class="title-bar">
+            辞書
+            <div class="btns">
+                <button onclick="minimize('window3')">_</button>
+                <button onclick="maximize('window3')">[]</button>
+                <button onclick="closeWindow('window3')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <iframe src="https://amuhiku.netlify.app" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
+    <div id="window4" class="window">
+        <div class="title-bar">
+            経済
+            <div class="btns">
+                <button onclick="minimize('window4')">_</button>
+                <button onclick="maximize('window4')">[]</button>
+                <button onclick="closeWindow('window4')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <canvas id="economyGraph" class="graph"></canvas>
+        </div>
+    </div>
+
+    <div id="window5" class="window">
+        <div class="title-bar">
+            メール
+            <div class="btns">
+                <button onclick="minimize('window5')">_</button>
+                <button onclick="maximize('window5')">[]</button>
+                <button onclick="closeWindow('window5')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>メールアプリの内容。</p>
+        </div>
+    </div>
+
+    <div id="window6" class="window">
+        <div class="title-bar">
+            天気予報
+            <div class="btns">
+                <button onclick="minimize('window6')">_</button>
+                <button onclick="maximize('window6')">[]</button>
+                <button onclick="closeWindow('window6')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <iframe src="https://sakalt.github.io/temperature/" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
+    <div id="window7" class="window">
+        <div class="title-bar">
+            タスク管理
+            <div class="btns">
+                <button onclick="minimize('window7')">_</button>
+                <button onclick="maximize('window7')">[]</button>
+                <button onclick="closeWindow('window7')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <input id="taskInput" class="task-input" type="text" placeholder="新しいタスクを追加...">
+            <button onclick="addTask()">タスクを追加</button>
+            <div id="taskList"></div>
+        </div>
+    </div>
+
+    <div id="window8" class="window">
+        <div class="title-bar">
+            メモ帳
+            <div class="btns">
+                <button onclick="minimize('window8')">_</button>
+                <button onclick="maximize('window8')">[]</button>
+                <button onclick="closeWindow('window8')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <textarea style="width: 100%; height: 100%;"></textarea>
+        </div>
+    </div>
+
+    <div id="window9" class="window">
+        <div class="title-bar">
+            カレンダー
+            <div class="btns">
+                <button onclick="minimize('window9')">_</button>
+                <button onclick="maximize('window9')">[]</button>
+                <button onclick="closeWindow('window9')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>カレンダーアプリの内容。</p>
+        </div>
+    </div>
+
+    <div id="window10" class="window">
+        <div class="title-bar">
+            計算機
+            <div class="btns">
+                <button onclick="minimize('window10')">_</button>
+                <button onclick="maximize('window10')">[]</button>
+                <button onclick="closeWindow('window10')">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>計算機アプリの内容。</p>
+        </div>
+    </div>
+
+    <script>
+        function initializeDrag(windowId) {
+            const windowElement = document.getElementById(windowId);
+            const titleBar = windowElement.querySelector('.title-bar');
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            titleBar.onmousedown = function(e) {
+                isDragging = true;
+                offsetX = e.clientX - windowElement.getBoundingClientRect().left;
+                offsetY = e.clientY - windowElement.getBoundingClientRect().top;
+                document.onmousemove = function(e) {
+                    if (isDragging) {
+                        windowElement.style.left = (e.clientX - offsetX) + 'px';
+                        windowElement.style.top = (e.clientY - offsetY) + 'px';
+                    }
+                };
+                document.onmouseup = function() {
+                    isDragging = false;
+                    document.onmousemove = document.onmouseup = null;
+                };
+            };
+        }
+
+        function minimize(windowId) {
+            const windowElement = document.getElementById(windowId);
+            windowElement.style.width = '200px';
+            windowElement.style.height = '30px';
+            windowElement.style.top = 'calc(100% - 30px)';
+            windowElement.style.left = '0';
+        }
+
+        function maximize(windowId) {
+            const windowElement = document.getElementById(windowId);
+            windowElement.style.width = '100%';
+            windowElement.style.height = '100%';
+            windowElement.style.top = '0';
+            windowElement.style.left = '0';
+        }
+
+        function closeWindow(windowId) {
+            document.getElementById(windowId).style.display = 'none';
+        }
+
+        function openWindow(windowId) {
+            const allWindows = document.querySelectorAll('.window');
+            allWindows.forEach(win => win.style.display = 'none');
+            document.getElementById(windowId).style.display = 'block';
+            initializeDrag(windowId);
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const taskText = taskInput.value.trim();
+            if (taskText) {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                taskItem.innerHTML = `
+                    <span>${taskText}</span>
+                    <button onclick="removeTask(this)">削除</button>
+                `;
+                taskList.appendChild(taskItem);
+                taskInput.value = '';
+                saveTasks();
+            }
+        }
+
+        function removeTask(button) {
+            button.parentElement.remove();
+            saveTasks();
+        }
+
+        function saveTasks() {
+            const tasks = [];
+            document.querySelectorAll('#taskList .task-item').forEach(item => {
+                tasks.push(item.querySelector('span').textContent);
+            });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const taskList = document.getElementById('taskList');
+            tasks.forEach(taskText => {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                taskItem.innerHTML = `
+                    <span>${taskText}</span>
+                    <button onclick="removeTask(this)">削除</button>
+                `;
+                taskList.appendChild(taskItem);
+            });
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockContent').textContent = now.toLocaleTimeString();
+        }
+
+        function updateEconomyGraph() {
+            const canvas = document.getElementById('economyGraph');
+            const ctx = canvas.getContext('2d');
+            const now = new Date();
+            const days = 10;
+            const gdpInitial = 28.16e12; // 28.16兆円
+            const gdpRange = 1.8e9; // 半径8億
+
+            // Generate GDP data
+            let gdpData = [];
+            for (let i = 0; i < days; i++) {
+                const dailyChange = (Math.random() * (10e8 - (-9e8))) - 9e8; // -9億から+10億
+                gdpData.push(gdpInitial + dailyChange);
+            }
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Set canvas size
+            canvas.width = 800;
+            canvas.height = 400;
+
+            // Draw graph
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - (gdpData[0] - (gdpInitial - gdpRange)) / (2 * gdpRange) * canvas.height);
+            for (let i = 1; i < gdpData.length; i++) {
+                const x = (i / (gdpData.length - 1)) * canvas.width;
+                const y = canvas.height - (gdpData[i] - (gdpInitial - gdpRange)) / (2 * gdpRange) * canvas.height;
+                ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = '#0078d4';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks();
+            updateClock();
+            setInterval(updateClock, 1000);
+            updateEconomyGraph();
+        });
+    </script>
+</body>
+</html>
